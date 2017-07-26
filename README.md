@@ -3,24 +3,23 @@
 This repository tracks the ongoing evolution of the frameworks and capabilities provided by the Swift@IBM team. It contains:
 * **Manifestos:** describing the proposed roadmaps and goals for major projects, eg. Kitura.
 * **Proposals:** describing the design proposals for new features or changes to existing capabilities.
-* **Status:** describing the status of the current proposals against that major project area
-* **Releases:** describing which past proposals were delivered in which release of a functional area
+* **Status:** describing the status of the current proposals against that major project area.
+* **Releases:** describing which past proposals were delivered in which release of a functional area.
 
 These are provided under subdirectories for each of the major project areas, currently:
 * [Kitura](https://github.com/IBM-Swift/evolution/tree/master/Kitura): for the Kitura framework itself
 * [Other](https://github.com/IBM-Swift/evolution/tree/master/Other): for all other projects  
 
 This will shortly be extended to provide specific areas for other major projects including: Monitoring, Swift Server Generator, etc
- 
-## Evolution Process
 
-The Swift@IBM Evolution process is modeled on the [Swift Evolution process](https://github.com/apple/swift-evolution/blob/master/process.md), but covers multiple functional areas, including all of the projects in the Swift@IBM organisation in GitHub. 
+## Evolution Process
+The Swift@IBM Evolution process is modeled on the [Swift Evolution process](https://github.com/apple/swift-evolution/blob/master/process.md), but covers multiple functional areas, including all of the projects in the Swift@IBM organisation in GitHub.
 
 ### Goals
 The Swift@IBM Evolution process aims to more publicly document the requirements, goals, architecture and design of capabilities and features being added to the Swift@IBM projects, and to leverage the feedback, ideas and experiences of the Swift community in order to provide capabilities that the community wants, in the way that they want them.
 
 ### Participation
-Everyone is welcome to propose, discuss, and review ideas to improve the Swift@IBM projects. Unlike the Swift Evolution process, there is no mailing list for discussion: discussions and reviews we be carried out using Slack and via GitHub pull requests and issues.
+Everyone is welcome to propose, discuss, and review ideas to improve the Swift@IBM projects. Unlike the Swift Evolution process, there is no mailing list for discussion: discussions and reviews will be carried out using Slack and via GitHub pull requests and issues.
 
 ### How to propose a change
 * Consider any documented goals in that functional area:  
