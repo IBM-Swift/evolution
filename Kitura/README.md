@@ -2,7 +2,7 @@
 
 A long stated goal of the Kitura framework has been to depended on and adopt the Swift standard and core libraries (Dispatch and Foundation) where possible in order to make the framework feel familiar to the developer, remove the need to convert types in order to reuse existing modules, and maximise the portability of application code.
 
-With the upcoming release of Swift 4, and the progress being made on the Swift Server APIs project, there are now additional standard capabilities that can be adopted. In particular, the introduction of Codable enables the removal of the dependency on SwiftyJSON and the move to a standard approach to JSON parsing.
+With the upcoming release of Swift 4, and the progress being made on the [Swift Server APIs project](https://swift.org/server-apis/), there are now additional standard capabilities that can be adopted. In particular, the introduction of Codable enables the removal of the dependency on SwiftyJSON and the move to a standard approach to JSON parsing.
 
 The side effect of adopting these standard capabilities is that Kitura's API surface needs to be updated, which means the release of a Kitura.next. This also provides us with an opportunity to deliver a number of additional goals, features and capabilities. 
 
@@ -12,13 +12,13 @@ The side effect of adopting these standard capabilities is that Kitura's API sur
 
 The Kitura router currently has the following API specification:
 
-```
+```swift
 public func get(_ path: String?=nil, handler: @escaping RouterHandler...) -> Router 
 ```
 
 This allows you to define the route path as a String, and respond with a `RouterHandler` callback which is defined as:
 
-```
+```swift
 typealias RouterHandler = (RouterRequest, RouterResponse, @escaping () -> Void) throws -> Void
 ```
 
@@ -47,7 +47,7 @@ _Proposed additional capabilities:_
 
 **3. Integrated support for OpenAPI (Swagger)**  
 
-The OpenAPI specification format (aka Swagger) is the standard definition format used to describe RESTful APIs. The OpenAPI specification for a server is typically used by:
+The [OpenAPI specification format](https://www.openapis.org) (aka [Swagger](https://swagger.io)) is the standard definition format used to describe RESTful APIs. The OpenAPI specification for a server is typically used by:
 * Developers  
 To understand what APIs are available and what parameters are accepted and returned.
 * Client SDK Code generation tools  
@@ -57,7 +57,7 @@ To provide automated test generation and execute against the API.
 * API Gateways  
 To allow the severs APIs to be registered with it for security and management of calls to the APIs.
 
-The Swift Server Generator provided by Kitura will already use a provided OpenAPI specification to:
+The [Swift Server Generator](http://www.kitura.io/en/starter/generator.html) provided by Kitura will already use a provided OpenAPI specification to:
 1. Create a the Kitura application that implements the described RESTful API
 2. Host the OpenAPI specification as part of the application so that it can be registered with API Gateways
 3. Create an iOS client SDK to make it easier to make calls to the Kitura server 
@@ -74,7 +74,7 @@ The current de-facto standard for sending and receiving data via RESTful APIs is
 
 Whilst a particularly appropriate transport for full-stack web applications, it is less so for full-stack Swift applications: JSON is a text based format that includes field names and therefore is not memory efficient, and the values stored in the format are not typed. The first means that data payloads being sent between an iOS client and a server are significantly larger than they could be, and the second means that type information is lost and complex serialisation and deserialisation conversions need to be carried out.
 
-Alternative transports that are emerging that are both data optimised and strongly typed making it possible to share exact data models between iOS client and server and to minimise data requirements. The most popular of these is gRPC and protobufs, but others are available including Thrift.
+Alternative transports that are emerging that are both data optimised and strongly typed making it possible to share exact data models between iOS client and server and to minimise data requirements. The most popular of these is [gRPC](https://grpc.io) which uses [protobufs](https://developers.google.com/protocol-buffers/), but others are available including [Thrift](https://thrift.apache.org).
 
 Adoption alternative transports provides a huge benefit for full-stack Swift developers, however at the cost of interoperability: every client has to use the same transport - unless the Server framework is able to handle different transports concurrently without the application having to be modified.
 
@@ -84,7 +84,7 @@ _Proposed additional capabilities:_
 
 
 **5. Portability with Serverless Swift**  
-"Serverless" frameworks like AWS Lambda and Apache OpenWhisk make it possible to create and run simple asynchronous actions, making it easy to add simple backend components to an application, without the complexity of running and managing a server framework.
+"Serverless" frameworks like [AWS Lambda](https://aws.amazon.com/lambda/) and [Apache OpenWhisk](https://developer.ibm.com/code/open/apache-openwhisk/) make it possible to create and run simple asynchronous actions, making it easy to add simple backend components to an application, without the complexity of running and managing a server framework.
 
 Today, the programming models for server and serverless applications are different. For example, an OpenWhisk action is implemented as:
 
@@ -104,7 +104,7 @@ _Proposed additional capabilities:_
 **6. More intuitive middlewares**  
 The current approach to middlewares implements a single API call which is called twice: one during processing of the request and once during processing of the response:
 
-```
+```swift
 func handle(request: RouterRequest, response: RouterResponse, next: @escaping () -> Void) 
 ```
 

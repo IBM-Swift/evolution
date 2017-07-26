@@ -7,14 +7,14 @@ This repository tracks the ongoing evolution of the frameworks and capabilities 
 * **Releases:** describing which past proposals were delivered in which release of a functional area
 
 These are provided under subdirectories for each of the major project areas, currently:
-* Kitura: for the Kitura framework itself
-* Other: for all other projects  
+* [Kitura](https://github.com/IBM-Swift/evolution/tree/master/Kitura): for the Kitura framework itself
+* [Other](https://github.com/IBM-Swift/evolution/tree/master/Other): for all other projects  
 
 This will shortly be extended to provide specific areas for other major projects including: Monitoring, Swift Server Generator, etc
  
 ## Evolution Process
 
-The Swift@IBM Evolution process is modelled on the Swift Evolution process [https://github.com/apple/swift-evolution/blob/master/process.md], but covers multiple functional areas, including all of the projects in the Swift@IBM organisation in GitHub. 
+The Swift@IBM Evolution process is modeled on the [Swift Evolution process](https://github.com/apple/swift-evolution/blob/master/process.md), but covers multiple functional areas, including all of the projects in the Swift@IBM organisation in GitHub. 
 
 ### Goals
 The Swift@IBM Evolution process aims to more publicly document the requirements, goals, architecture and design of capabilities and features being added to the Swift@IBM projects, and to leverage the feedback, ideas and experiences of the Swift community in order to provide capabilities that the community wants, in the way that they want them.
@@ -28,16 +28,16 @@ Each of the major functional areas will eventually have a published manifesto de
 * Socialize the idea:  
 Before creating a proposal, the idea should be discussed via Slack, stating the use case, and the problems it solves, along with an idea of what the solution might look like in order to gain interest from the community.
 * Develop the proposal:  
-Proposals should be developed using the proposal template. Prototyping an implementation and its uses along with the proposal is encouraged, because it helps ensure both technical feasibility of the proposal as well as validating that the proposal solves the problems it is meant to solve.
+Proposals should be developed using the proposal [template](https://github.com/IBM-Swift/evolution/blob/master/template.md). Prototyping an implementation and its uses along with the proposal is encouraged, because it helps ensure both technical feasibility of the proposal as well as validating that the proposal solves the problems it is meant to solve.
 * Request a review:  
-Submitting the proposal via a pull request to ibm-swift/evolution repository starts a review of the proposal submission, ensuring that it is sufficiently detailed and clear. Once accepted as a proposal, a proposal number and a Swift@IBM team member will be assigned to the proposal. A GitHub issue will then be opened in order to review the proposal itself.
+Submitting the proposal via a pull request to the [ibm-swift/evolution](https://github.com/IBM-Swift/evolution) repository starts a review of the proposal submission, ensuring that it is sufficiently detailed and clear. Once accepted as a proposal, a proposal number and a Swift@IBM team member will be assigned to the proposal. A GitHub issue will then be opened in order to review the proposal itself.
 * Address feedback:  
 Feedback provided during the review should be responded to and addressed.
 
 ### Review process
 Once the proposal is accepted and a GitHub issue created, the review manager will work with the proposal authors generate and address feedback. The review period will typically be one week, but may run longer if there is still ongoing discussion that needs to be addressed.
 
-After the review has completed, the review manager is responsible for determining consensus and reporting the decision to the proposal authors. The review manager will then update the proposal's state in the ibm-swift/evolution repository to reflect that decision.
+After the review has completed, the review manager is responsible for determining consensus and reporting the decision to the proposal authors. The review manager will then update the proposal's state in the [ibm-swift/evolution](https://github.com/IBM-Swift/evolution) repository to reflect that decision.
 
 ### Proposal states
 A given proposal can be in one of several states:
