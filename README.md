@@ -50,4 +50,4 @@ A given proposal can be in one of several states:
 * Implemented (release version)  
 
 ### Implementation of proposals
-Once a proposal has been accepted, an issue will be created in the relevant project to implement the proposal. Participation from the community to implement proposals is encouraged. It is recommended that you contact any people assigned to the issue in order to collaborate with them, or discuss with review manager how to get started implementing the proposal for any unassigned proposals.
+Once a proposal has been accepted, an issue will be created in the relevant project to implement the proposal. Participation from the community to implement proposals is encouraged. It is recommended that you contact any people assigned to the issue in order to collaborate with them, or discuss with the review manager how to get started implementing the proposal for any unassigned proposals.
