@@ -10,7 +10,7 @@ These are provided under subdirectories for each of the major project areas, cur
 * [Kitura](https://github.com/IBM-Swift/evolution/tree/master/Kitura): for the Kitura framework itself
 * [Other](https://github.com/IBM-Swift/evolution/tree/master/Other): for all other projects  
 
-This will shortly be extended to provide specific areas for other major projects including: Monitoring, Swift Server Generator, etc
+This will shortly be extended to provide specific areas for other major projects including: Monitoring, Swift Server Generator, etc.
 
 ## Evolution Process
 The Swift@IBM Evolution process is modeled on the [Swift Evolution process](https://github.com/apple/swift-evolution/blob/master/process.md), but covers multiple functional areas, including all of the projects in the Swift@IBM organisation in GitHub.
