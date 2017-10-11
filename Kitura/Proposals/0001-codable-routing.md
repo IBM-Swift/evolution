@@ -13,7 +13,7 @@ The Kitura router currently requires you to interact with `RouterRequest` and `R
 This proposal adds a new set of convenience APIs that provides an abstraction layer for the developer, where the framework deals with data validation and processing, and provides on requested concrete Swift types to the application code.
 
 ### Motivation
-The current API provide by the Kitura Router provides the developer with significant amounts of flexibility and low level control. This however also means that the developer must write relatively complex code to carry out simple tasks. For example, the following is a "best practice" implementation of a RESTful API for a `POST` request on `/` that expects to receive a `Name` object as a JSON payload, defined as follows:
+The current API provided by the Kitura Router provides the developer with significant amounts of flexibility and low level control. This, however, also means that the developer must write relatively complex code to carry out simple tasks. For example, the following is a "best practice" implementation of a RESTful API for a `POST` request on `/` that expects to receive a `Name` object as a JSON payload, defined as follows:
 
 ```
 {
