@@ -169,7 +169,7 @@ delete(_ route: String, handler: @escaping (Identifier, completion: @escaping (E
 For each of the Codable and Identifier routes, the handler has the ability to return an error. This provides the handler with a mechanism to report an error which affects the headers and return codes used in the underlying HTTP response. The following error values are available, which matches the possible HTTP status codes:
 
 ```swift
-public enum RouteHandlerError: Error {
+public enum RouteHandlerError: Int, Error {
     case accepted = 202, badGateway = 502, badRequest = 400, conflict = 409, `continue` = 100, created = 201
     case expectationFailed = 417, failedDependency  = 424, forbidden = 403, gatewayTimeout = 504, gone = 410
     case httpVersionNotSupported = 505, insufficientSpaceOnResource = 419, insufficientStorage = 507
