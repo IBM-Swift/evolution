@@ -122,10 +122,10 @@ This however is limited, as most RESTful APIs also use URL encoded data. For exa
 ```
     GET /user/1
 ```
-would typically be used to retrieve data associated with user #1. 
+would typically be used to retrieve data associated with a user uniquely identified by ID 1. 
 
 #### Identifier Routing
-These use cases are handled by providing the additional ability for the developer to request that a type that conforms to `Indentifier` is also passed to the handler, for example:
+These use cases are handled by providing the additional ability for the developer to request that a type that conforms to `Identifier` is also passed to the handler, for example:
 
 ```swift
 struct UserId: Identifier {
@@ -146,9 +146,9 @@ func handleGetUser(id: UserID, completion: (User?, Error?) -> Void) {
 }
 ```
 
-Here the `Identifier` struct provides a constructor that accepts String. This is called by the Router with the value encoded in the root URL. 
+Here the `Identifier` struct provides a constructor that accepts a String value. This is called by the Router with the value encoded in the root URL. 
 
-Below is the new API specification for additionally Identifier routes:
+Below is the new API specification for additionally `Identifier` routes:
 
 ```swift
 // GET: handler receives an Identifier and responds with a Codable via the completion handler
