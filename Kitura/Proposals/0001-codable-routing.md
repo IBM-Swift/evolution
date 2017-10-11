@@ -170,7 +170,7 @@ For each of the Codable and Identifier routes, the handler has the ability to re
 
 ```swift
 public enum RouteHandlerError: Error {
-	case accepted = 202, badGateway = 502, badRequest = 400, conflict = 409, `continue` = 100, created = 201
+    case accepted = 202, badGateway = 502, badRequest = 400, conflict = 409, `continue` = 100, created = 201
     case expectationFailed = 417, failedDependency  = 424, forbidden = 403, gatewayTimeout = 504, gone = 410
     case httpVersionNotSupported = 505, insufficientSpaceOnResource = 419, insufficientStorage = 507
     case internalServerError = 500, lengthRequired = 411, methodFailure = 420, methodNotAllowed = 405
