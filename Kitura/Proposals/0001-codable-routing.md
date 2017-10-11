@@ -107,13 +107,13 @@ Below is the new API specification for Codable routes:
 extension Router {
 
 // POST: handler receives body data as a Codable and responds with a Codable via the completion handler
-post(_ route: String, handler: @escaping (Codable, completion: @escaping (Codable?, Error?) -> Void) throws -> Void)
+post(_ route: String, handler: @escaping (Codable, completion: @escaping (Codable?, Error?) -> Void) -> Void)
 
 // GET: handler receives no body data and responds with an array of Codable via the completion handler
-get(_ route: String, handler: @escaping (completion: @escaping ([Codable]?, Error?) -> Void) throws -> Void)
+get(_ route: String, handler: @escaping (completion: @escaping ([Codable]?, Error?) -> Void) -> Void)
 
 // DELETE handler receives no body data and responds by calling the completion handler with no data
-delete(_ route: String, handler: @escaping (completion: @escaping (Error?) -> Void) throws -> Void)
+delete(_ route: String, handler: @escaping (completion: @escaping (Error?) -> Void) -> Void)
 
 }
 ```
@@ -152,16 +152,16 @@ Below is the new API specification for additionally `Identifier` routes:
 
 ```swift
 // GET: handler receives an Identifier and responds with a Codable via the completion handler
-get(_ route: String, handler: @escaping (Identifier, completion: @escaping (Codable?, Error?) -> Void) throws -> Void)
+get(_ route: String, handler: @escaping (Identifier, completion: @escaping (Codable?, Error?) -> Void) -> Void)
 
 // PUT: handler receives an Identifier and responds with a Codable via the completion handler
-put(_ route: String, handler: @escaping (Identifier, completion: @escaping (Codable?, Error?) -> Void) throws -> Void)
+put(_ route: String, handler: @escaping (Identifier, completion: @escaping (Codable?, Error?) -> Void) -> Void)
 
 // PATCH: handler receives an Identifier and responds with a Codable via the completion handler
-patch(_ route: String, handler: @escaping (Identifier, completion: @escaping (Codable?, Error?) -> Void) throws -> Void)
+patch(_ route: String, handler: @escaping (Identifier, completion: @escaping (Codable?, Error?) -> Void) -> Void)
 
 // DELETE: handler receives an Identifier and responds by calling the completion handler with no data
-delete(_ route: String, handler: @escaping (Identifier, completion: @escaping (Error?) -> Void) throws -> Void)
+delete(_ route: String, handler: @escaping (Identifier, completion: @escaping (Error?) -> Void) -> Void)
 ```
 **Note:** This is a simplification of how `Identifier` is intended to work. It will be covered in more detail in a subsequent proposal.
 
@@ -208,7 +208,7 @@ becomes:
  // POST: handler receives body data as a Codable and responds with a Codable via the completion handler
 post(_ route: String, handler: @escaping (Codable) throws -> Codable)
 ```
-This however comes as the cost of being able to do asynchronous processing.
+This, however, comes as the cost of being able to do asynchronous processing.
 
 It is conceivable to support both types of API, however doing so adds an additional level of complexity for the developer, who now has to understand the differences between the two APIs and choose which to use. This could however be partially mitigated by using the approach that is common in Node.js, which is to add a `sync` identifier to the function name, eg:
 
