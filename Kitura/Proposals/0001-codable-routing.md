@@ -30,7 +30,7 @@ router.post("/", handler: handlePost)
 func handlePost(request: RouterRequest, response: RouterResponse, next: @escaping () -> Void) {
     // Check that the HTTP "Content-Type" header is correctly set to "application/json"
     // If not return `.unsupportedMediaType`
-        guard let contentType = request.headers["Content-Type"], contentType.hasPrefix("application/json") else {
+    guard let contentType = request.headers["Content-Type"], contentType.hasPrefix("application/json") else {
         response.status(.unsupportedMediaType)
         response.send(json: JSON([ "error": "Request Content-Type must be application/json" ]))
         return next()
@@ -64,8 +64,8 @@ func handlePost(request: RouterRequest, response: RouterResponse, next: @escapin
     //
     
     // Return the Name object as JSON
-    response.send(json: JSON(receivedname))
-    }
+    response.send(json: ["name": receivedname])
+}
 ```
 
 ### Proposed solution
@@ -76,10 +76,6 @@ Utilizing the new API layer, the above code becomes:
 ```swift
 struct Name: Codable {
    let name: String
-   
-   init(name: String) {
-       self.name = name
-    }
 }
 
 router.post("/", handler: handlePost)
@@ -106,14 +102,14 @@ Below is the new API specification for Codable routes:
 ```swift
 extension Router {
 
-// POST: handler receives body data as a Codable and responds with a Codable via the completion handler
-post(_ route: String, handler: @escaping (Codable, completion: @escaping (Codable?, Error?) -> Void) -> Void)
+    // POST: handler receives body data as a Codable and responds with a Codable via the completion handler
+    post(_ route: String, handler: @escaping (Codable, completion: @escaping (Codable?, Error?) -> Void) -> Void)
 
-// GET: handler receives no body data and responds with an array of Codable via the completion handler
-get(_ route: String, handler: @escaping (completion: @escaping ([Codable]?, Error?) -> Void) -> Void)
+    // GET: handler receives no body data and responds with an array of Codable via the completion handler
+    get(_ route: String, handler: @escaping (completion: @escaping ([Codable]?, Error?) -> Void) -> Void)
 
-// DELETE handler receives no body data and responds by calling the completion handler with no data
-delete(_ route: String, handler: @escaping (completion: @escaping (Error?) -> Void) -> Void)
+    // DELETE handler receives no body data and responds by calling the completion handler with no data
+    delete(_ route: String, handler: @escaping (completion: @escaping (Error?) -> Void) -> Void)
 
 }
 ```
@@ -218,6 +214,48 @@ postSync(_ route: String, handler: @escaping (Codable) throws -> Codable)
 ```
 
 Whilst taking this approach is an option, this proposal does not cover adding these `sync` APIs.
+
+#### Promises
+The callback-based API could be simplified using Promises so that the handlers return a Promise instead of calling the callback:
+
+```swift
+ // POST: handler receives body data as a Codable and responds with a Codable via the completion handler
+post(_ route: String, handler: @escaping (Codable, completion: @escaping (Codable?, Error?) -> Void) -> Void)
+```
+
+becomes:
+
+```swift
+ // POST: handler receives body data as a Codable and responds with a Codable via the completion handler
+post(_ route: String) -> Promise<Codable>
+```
+
+This would simplify the method signature and error handling.
+
+However, Swift does not have built-in promises and whilst there are A+ promises compliant libraries (like PromiseKit) there is no abstraction available over the different implementations. We would have to be opinionated and choose a particular library which limits the options of users. Swift is likely to add async-await to the language (and perhaps Promises to Foundation as well) in the near future so it is prudent to continue with the existing callback-based approach we have been using so far so we do not introduce an API that could be incompatible with future Swift updates.
+
+#### Result<T> enum instead of optionals in callback
+The callback-based API has a callback that takes an optional Codable and optional Error as parameters. This introduces 4 combinations where one or the other of these is nil/present. Only 2 of these combinations is valid (we never want an Error *and* and Codable, and we never want both to be nil).
+
+In order to remove these cases we could use a generic Result enum, like:
+
+```swift
+enum Result<T> {
+    case success(T)
+    case failure(Error)
+}
+```
+
+giving a POST implementation like this:
+
+```swift
+ // POST: handler receives body data as a Codable and responds with a Codable via the completion handler
+post(_ route: String, handler: @escaping (Codable, completion: @escaping (Result<Codable>) -> Void) -> Void)
+```
+
+This would enforce that you either have a Codable or you have an Error.
+
+Whilst this pattern is used in a some libraries for implementing callbacks, it is more common to use the 2 optionals approach and looking at the current proposals for async-await it looks likely there will be a migration path provided to make this pattern compatible with async-await (much as `PromiseKit.wrap()` provides).
 
 ### Further Work
 As noted above, a further proposal is required to cover the implementation of the `Identifier` protocol in-depth. Additionally, Route handlers typically use two other types of data that are not covered by this proposal:
