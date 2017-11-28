@@ -105,6 +105,7 @@ The following list includes the types that we intend to initialy support in `Que
   
 Hence, to encapsulate query parameters, developers can define a Swift type with fields that are of any of the types listed above (optional and non-optional). 
 
+##### Date type
 The `Date` type is of special interest since, by default, it will require date values specified in a query string to conform to the `yyyy-MM-dd'T'HH:mm:ssZ` format. Since this format is widely used for specifying date values in JSON payloads, we expect most applications can utilize the custom `Decoder` for query parameters as-is. However, there could be applications that require a different date format in their JSON payloads. To satisfy this need, `QueryDecoder` exposes a `DateFormatter` static variable that developers can modify to their needs:
 
 ```swift
@@ -114,12 +115,13 @@ QueryDecoder.dateFormatter.timeZone = ...
 
 [**RO - There is a limitation here since what I am describing above is a single `DateFormatter` instance for the QueryDecoder class. In other words, it is a static field. If we wanted to provide more fine-granular control, we would need to make the `DateFormatter` instance and instance field and not a static field of the QueryDecoder class. In addition, we would then need to allow developers to somehow provide the QueryDecoder instance that a given route handler should use... for now, I am staying away from this... unless we think that this is a must do as part of this proposal**].
 
-Developers can also take advantage of the decoding capabilities for nested `Codable` types, as shown below:
+##### Nested types that conform to Codable
+Developers can also take advantage of the decoding capabilities in `QueryDecoder` for nested `Codable` types, as shown below:
 
 ```swift
 public struct UserQuery: Codable {
-    public let age: Int?
-    public let name: String
+    public let level: Int?
+    public let gender: String
     public let roles: [String]
     public let nested: Nested
 }
@@ -139,7 +141,13 @@ As part of the query string for filtering `User` entities, a `nested` key can be
 }
 ```
 
-As part of the decoding process, `QueryDecoder` will decode the string that contains the JSON shown above and then create the correspding `Nested` instance.
+A sample query string that can be decoded into a `UserQuery` instane is:
+
+```
+?level=25&gender=female&roles=developer,tester,manager&nested={"nestedInt": 1234,"nestedString": "string"}
+```
+
+Therefore, as part of the decoding process, `QueryDecoder` will decode the JSON string value mapped to the `nested` key and then create the correspding `Nested` instance.
 
 ### Feedback
 Feedback should be via either (or both) of the following routes:
