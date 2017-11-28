@@ -53,7 +53,7 @@ router.get("/employees") { (query: EmployeeQuery, respondWith: ([Employees]?, Re
 }
 ```
 
-Here the developer has specified the Swift type (e.g. `EmployeeQuery`) that the handler expects to contain the query parameters found in the incoming HTTP request. Using the new proposed API, developers will define a Swift type that conforms to the `Codable` protocol and encapsulates the fields that should make up the query parameters for a corresponding route (e.g. `/employees`). For instance, in the sample above, the Swift type named `EmployeeQuery` encapsulates the different fields (i.e. `countries`, `position`, and `level`) that are part of the query string sent from the client application (e.g. `?countries=US,UK&position=developer&level=55`).
+Here the developer has specified the Swift type (e.g. `EmployeeQuery`) that the handler expects to contain the query parameters found in the incoming HTTP request. Using the new proposed API, developers define a Swift type that conforms to the `Codable` protocol and encapsulates the fields that should make up the query parameters for a corresponding route (e.g. `/employees`). For instance, in the sample above, the Swift type named `EmployeeQuery` encapsulates the different fields (i.e. `countries`, `position`, and `level`) that are part of the query string sent from the client application (e.g. `?countries=US,UK&position=developer&level=55`).
 
 ```swift
 public struct EmployeeQuery: Codable {
@@ -67,7 +67,7 @@ Using a concrete Swift type as the embodiment for query parameters provides type
 
 ### Detailed design
 
-#### Codable routing & query parameters
+#### Codable routing and query parameters
 The new addition to the Codable APIs in Kitura adds the ability to specify Codable route handlers that denote the concrete Swift type the handler expects to receive as the embodiment for query parameters. Therefore, the framework is expected to validate that the elements found in the query string of the incoming HTTP request can be converted to their corresponding types (e.g. `String`, `Int`, `Float`, `Double`, etc.) and reject non-conforming requests.
 
 Below is the new API specifications for augmentimng the Codable API routes in Kitura (please note that we intend to augment the APIs for the `GET` and `DELETE` methods with the additional Swift type for wrapping query parameters):
@@ -84,7 +84,7 @@ extension Router {
 ```
 
 #### Decoding Swift types at runtime
-As described above, for a developer to take advantage of the new proposed APIs, he/she first defines the Swift type that encapsultates the fields that make up the query parameters for a given route and then defines the handler that conforms to either one of the function signatures defined in the previous sub-section. This implies that the framework needs a mechanism for decoding, at runtime, the query string found in an incoming HTTP `GET` or HTTP `DELETE` request into the corresponding Swift type. Initially, we had thought of using the [Reflection API](https://developer.apple.com/documentation/swift/mirror) in Swift but determined that a few limitations would arise from doing so. For instance, all fields in the Swift type would need to be optionals since the Reflection API requires an instance of the type before we can do anything meaningful such as figuring out the names and types of the instance fields. Hence, instead of using the reflection API, a custom [`Decoder`](https://developer.apple.com/documentation/swift/decoder) will be implemented to determine the composition of a Swift type that conforms to the `Codable` protocol. This will allow developers to define Swift types, for their query entities, that can include optional and non-optional values. 
+As described above, for a developer to take advantage of the new proposed APIs, he/she first defines the Swift type that encapsultates the fields that make up the query parameters for a given route and then defines the handler that conforms to either one of the function signatures defined in the previous sub-section. This implies that the framework needs a mechanism for decoding, at runtime, the query string found in an incoming HTTP `GET` or HTTP `DELETE` request into the corresponding Swift type. Initially, we had thought of using the [Reflection API](https://developer.apple.com/documentation/swift/mirror) in Swift but determined that a few limitations would arise from doing so. For instance, all fields in the Swift type would need to be optionals since the Reflection API requires an instance of the type before we can do anything meaningful such as figuring out the names and types of the instance fields. Hence, instead of using the reflection API, a custom [`Decoder`](https://developer.apple.com/documentation/swift/decoder) will determine the internal composition (i.e. properties and types) of a Swift type that conforms to the `Codable` protocol. This will allow developers to define Swift types, for their query entities, that can include optional and non-optional values. 
 
 The following list includes the types that we intend to initialy support in our custom `Decoder`:
 
@@ -103,19 +103,43 @@ The following list includes the types that we intend to initialy support in our 
 - `Array<Date>`
 - `Codable`
   
-Hence, to encapsulate query parameters, developers will be able to define a Swift type that has fields that are of any of the types listed above (optional and non-optional). 
+Hence, to encapsulate query parameters, developers can define a Swift type with fields that are of any of the types listed above (optional and non-optional). 
 
-The `Date` type is of special interest since, by default, it will require Date values specified in a query string to conform to the `yyyy-MM-dd'T'HH:mm:ssZ` format. Since this format is widely used for specifying date values in JSON payloads, we expect most applications can utilize the custom `Decoder` for query parameters as-is. However, there could be applications that require a different date format in their JSON payloads. To satisfy this need, the custom `Decoder` will allow developers to modify the properties of the `DateFormatter` instance it uses for decoding date strings:
+The `Date` type is of special interest since, by default, it will require date values specified in a query string to conform to the `yyyy-MM-dd'T'HH:mm:ssZ` format. Since this format is widely used for specifying date values in JSON payloads, we expect most applications can utilize the custom `Decoder` for query parameters as-is. However, there could be applications that require a different date format in their JSON payloads. To satisfy this need, the custom `Decoder` will allow developers modify the properties of the `DateFormatter` instance it uses for decoding date strings:
 
 ```swift
 QueryDecoder.dateFormatter.dateFormat = ...
 QueryDecoder.dateFormatter.timeZone = ...
 ```
 
-[**Now... there is a limitation here since what I am describing above is a single `DateFormatter` instance for QueryDecoder class... in other words, it is a static field. If we wanted to provide more fine-granular control, we would need to make the `DateFormatter` instance and instance field and not a static field... but not only that... we would then need to allow developers to somehow provide the QueryDecoder instance that a given route handler should use... for now, I am staying away from this... unless we think that this is a must do as part of this proposal**].
+[**RO - There is a limitation here since what I am describing above is a single `DateFormatter` instance for the QueryDecoder class. In other words, it is a static field. If we wanted to provide more fine-granular control, we would need to make the `DateFormatter` instance and instance field and not a static field of the QueryDecoder class. In addition, we would then need to allow developers to somehow provide the QueryDecoder instance that a given route handler should use... for now, I am staying away from this... unless we think that this is a must do as part of this proposal**].
 
+Also, developers can take advandatge of the decoding capabilitires for nested `Codable` types. For instance, say a `UserQuery` is defined as follows:
 
+```swift
+public struct UserQuery: Codable {
+    public let age: Int?
+    public let name: String
+    public let roles: [String]
+    public let nested: Nested
+}
 
+public struct Nested: Codable {
+    public let nestedInt: Int
+    public let nestedString: String
+}
+```
+
+As part of the query string for filtering `User` entities, a `nested` key can be provided that contains the following as its value: 
+
+```json
+{
+  "nestedInt": 1234,
+  "nestedString": "string"
+}
+```
+
+As part of the decoding process, the custom `Decoder` will then create the correspding `Nested` instance.
 
 ### Feedback
 Feedback should be via either (or both) of the following routes:
