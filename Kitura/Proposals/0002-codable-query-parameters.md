@@ -103,12 +103,18 @@ The following list includes the types that we intend to initialy support in our 
 - `Array<Date>`
 - `Codable`
   
-In other words, a developer will be able to define a Swift type for encapsulating query parameters that has fields that are of any of the types specified above (optional and non-optional). The `Date` type is of special interest since, by default, it will require Date values specified in a query string to conform to the `yyyy-MM-dd'T'HH:mm:ssZ` format. Since this format is widely used for specifying date values in JSON payloads, we expect most applications can utilize the custom `Decoder` as-is. However, there could be applications that require a different date format in their JSON payloads. To satisfy this need, the custom `Decoder` will allow developers to modify the properties of the `DateFormatter` instance it uses for decoding date strings:
+Hence, to encapsulate query parameters, developers will be able to define a Swift type that has fields that are of any of the types listed above (optional and non-optional). 
+
+The `Date` type is of special interest since, by default, it will require Date values specified in a query string to conform to the `yyyy-MM-dd'T'HH:mm:ssZ` format. Since this format is widely used for specifying date values in JSON payloads, we expect most applications can utilize the custom `Decoder` for query parameters as-is. However, there could be applications that require a different date format in their JSON payloads. To satisfy this need, the custom `Decoder` will allow developers to modify the properties of the `DateFormatter` instance it uses for decoding date strings:
 
 ```swift
 QueryDecoder.dateFormatter.dateFormat = ...
 QueryDecoder.dateFormatter.timeZone = ...
 ```
+
+[**Now... there is a limitation here since what I am describing above is a single `DateFormatter` instance for QueryDecoder class... in other words, it is a static field. If we wanted to provide more fine-granular control, we would need to make the `DateFormatter` instance and instance field and not a static field... but not only that... we would then need to allow developers to somehow provide the QueryDecoder instance that a given route handler should use... for now, I am staying away from this... unless we think that this is a must do as part of this proposal**].
+
+
 
 
 ### Feedback
