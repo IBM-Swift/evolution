@@ -144,7 +144,7 @@ As part of the query string for filtering `User` entities, a `nested` key can be
 A sample query string that can be decoded into a `UserQuery` instance is:
 
 ```
-?level=25&gender=female&roles=developer,tester,manager&nested={"nestedInt": 1234,"nestedString": "string"}
+?level=25&gender=female&roles=developer,tester,manager&nested={"nestedInt": 1234, "nestedString": "string"}
 ```
 
 Therefore, as part of the decoding process, `QueryDecoder` will decode the JSON string value mapped to the `nested` key and then create the correspding `Nested` instance.
