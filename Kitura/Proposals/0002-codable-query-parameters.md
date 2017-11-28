@@ -141,7 +141,7 @@ As part of the query string for filtering `User` entities, a `nested` key can be
 }
 ```
 
-A sample query string that can be decoded into a `UserQuery` instane is:
+A sample query string that can be decoded into a `UserQuery` instance is:
 
 ```
 ?level=25&gender=female&roles=developer,tester,manager&nested={"nestedInt": 1234,"nestedString": "string"}
