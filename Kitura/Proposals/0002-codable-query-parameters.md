@@ -88,29 +88,28 @@ As described above, for a developer to take advantage of the new proposed APIs, 
 
 The following list includes the types that we intend to initialy support in our custom `Decoder`:
 
-- Array<Int>
-- Int
-- Array<UInt>
-- UInt
-- Float
-- Array<Float>
-- Double
-- Array<Double>
-- Bool
-- String
-- Array<String>
-- Date
-- Array<Date>
-- Codable
+- `Array<Int>`
+- `Int`
+- `Array<UInt>`
+- `UInt`
+- `Float`
+- `Array<Float>`
+- `Double`
+- `Array<Double>`
+- `Bool`
+- `String`
+- `Array<String>`
+- `Date`
+- `Array<Date>`
+- `Codable`
   
-In other words, a developer will be able to define a Swift type for encapsulating query parameters that has fields that are of any of the types specified above (optional and non-optional). The `Date` type is of special interest since, by default, it will require Date values specified in a qeury steong to conform to the following format: `yyyy-MM-dd'T'HH:mm:ssZ`. This format is widely used for spceifying date values in JSON payloads. However, there could be cases when a different format is desired. To satisfy this need, the custom `Decoder` will allow developers to modify the properties of the `DateFormatter` instance it uses for decoding date strings:
+In other words, a developer will be able to define a Swift type for encapsulating query parameters that has fields that are of any of the types specified above (optional and non-optional). The `Date` type is of special interest since, by default, it will require Date values specified in a query string to conform to the `yyyy-MM-dd'T'HH:mm:ssZ` format. Since this format is widely used for specifying date values in JSON payloads, we expect most applications can utilize the custom `Decoder` as-is. However, there could be applications that require a different date format in their JSON payloads. To satisfy this need, the custom `Decoder` will allow developers to modify the properties of the `DateFormatter` instance it uses for decoding date strings:
 
 ```swift
-
-let queryDecoder = QueryDecoder()
-queryDecoder.dateFormatter.dateFormat = ...
-
+QueryDecoder.dateFormatter.dateFormat = ...
+QueryDecoder.dateFormatter.timeZone = ...
 ```
+
 
 ### Feedback
 Feedback should be via either (or both) of the following routes:
