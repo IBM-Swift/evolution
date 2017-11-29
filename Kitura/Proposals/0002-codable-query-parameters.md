@@ -69,7 +69,7 @@ Though covering changes to [KituraKit](https://github.com/IBM-Swift/KituraKit) i
 
 ```swift
     func get<O: Codable, Q: Codable>(_ route: String, query: Q, respondWith: @escaping CodableArrayResultClosure<O>)
-    func delete<Q: Codable>(_ route: query: Q, String, respondWith: @escaping ResultClosure)
+    func delete<Q: Codable>(_ route: String, query: Q, respondWith: @escaping ResultClosure)
 ```
 
 ### Detailed design
