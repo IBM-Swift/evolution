@@ -8,7 +8,7 @@
 * Previous Proposal: N/A
 
 ### Introduction
-The latest version of Kitura (which at the time of writing is `2.0.2`) provides a new set of "Codable Routing" APIs that developers can leverage for implementing route handlers that take advantage of the new [`Codable`](https://developer.apple.com/documentation/foundation/archives_and_serialization/encoding_and_decoding_custom_types) protocol that was made available with the release of [Swift 4](https://swift.org/blog/swift-4-0-released/). This new set of Kitura APIs provides developers with an abstraction layer, where the framework hides the complexity of processing the HTTP request and HTTP response objects and makes available the requested concrete Swift types to the application code.
+The latest version of [Kitura](https://github.com/IBM-Swift/Kitura) (which at the time of writing is `2.0.2`) provides a new set of "Codable Routing" APIs that developers can leverage for implementing route handlers that take advantage of the new [`Codable`](https://developer.apple.com/documentation/foundation/archives_and_serialization/encoding_and_decoding_custom_types) protocol that was made available with the release of [Swift 4](https://swift.org/blog/swift-4-0-released/). This new set of Kitura APIs provides developers with an abstraction layer, where the framework hides the complexity of processing the HTTP request and HTTP response objects and makes available the requested concrete Swift types to the application code.
 
 This proposal seeks to augment the Codable Routing APIs so that [query parameters](https://en.wikipedia.org/wiki/Query_string) can be provided to the application code in a type-safe manner, without requiring the developer to understand the underlying pinnings of HTTP requests and the composition of query strings.
 
@@ -62,7 +62,16 @@ public struct EmployeeQuery: Codable {
 }
 ```
 
+Note that the fields that make up the Swift type can be optionals (see [`Detailed design`](#detailed-design) for further details).
+
 Using a concrete Swift type as the embodiment for query parameters provides type safety to developers and, at the same time, allows the framework do the heavy lifting, on behalf developers, for parsing the query string, extracting the key-value pairs, and transforming these into the expected data types.
+
+Though covering changes to [KituraKit](https://github.com/IBM-Swift/KituraKit) is beyond the scope of this proposal, it is worth mentioning that in addition to the proposed APIs described here for Kitura, we also propose augmenting the Codable Routing APIs in KituraKit. These changes will allow developers denote, on the client side, the Swift type that enscapsulates the query parameters that should be included in an HTTP `GET` and HTTP `DELETE` request that comes out from KituraKit. Consequently, developers will be able share the definition of this Swift type between the client and the server. The enchancements to the APIs in KituraKit also include capabilities for encoding the Swift type into the corresponding query string that will appear in the outbound HTTP request:
+
+```swift
+    func get<O: Codable, Q: Codable>(_ route: String, query: Q, respondWith: @escaping CodableArrayResultClosure<O>)
+    func delete<Q: Codable>(_ route: query: Q, String, respondWith: @escaping ResultClosure)
+```
 
 ### Detailed design
 
