@@ -1,5 +1,5 @@
-## API Improvement for Query Parameters
-* Proposal: KIT-0003
+## API Improvements for Query Parameters
+* Proposal: KIT-0002
 * Authors: [Ricardo Olivieri](https://github.com/rolivieri), [Chris Bailey](https://github.com/seabaylea)
 * Review Manager: [Lloyd Roseblade](https://github.com/lroseblade)
 * Status: DRAFT

@@ -1,5 +1,5 @@
 ## Query Parameters for Codable Routing
-* Proposal: KIT-0002
+* Proposal: KIT-0003
 * Authors: [Ricardo Olivieri](https://github.com/rolivieri), [Chris Bailey](https://github.com/seabaylea)
 * Review Manager: [Lloyd Roseblade](https://github.com/lroseblade)
 * Status: DRAFT
@@ -73,6 +73,9 @@ Though covering changes to [KituraKit](https://github.com/IBM-Swift/KituraKit) i
 ```
 
 ### Detailed design
+
+#### Prerequisites
+This proposal requires the implementation of [KIT-0002](./0002-query-parameters-enhancement) proposal.
 
 #### Codable routing and query parameters
 The new addition to the Codable Routing APIs in Kitura adds the ability to specify Codable route handlers that denote the concrete Swift type the handler expects to receive as the embodiment for query parameters. Therefore, the framework is expected to validate that the elements found in the query string of the incoming HTTP request can be converted to their corresponding types (e.g. `String`, `Int`, `Float`, `Double`, etc.) and reject non-conforming requests.
