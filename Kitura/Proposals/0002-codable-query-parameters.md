@@ -1,4 +1,4 @@
-## Codable Query Parameters
+## Query Parameters for Codable Routing
 * Proposal: KIT-0002
 * Authors: [Ricardo Olivieri](https://github.com/rolivieri), [Chris Bailey](https://github.com/seabaylea)
 * Review Manager: [Lloyd Roseblade](https://github.com/lroseblade)
@@ -8,12 +8,20 @@
 * Previous Proposal: N/A
 
 ### Introduction
-The latest version of Kitura (which at the time of writing is `2.0.2`) provides a new set of APIs that developers can leverage for implementing route handlers that take adavantage of the new [`Codable`](https://developer.apple.com/documentation/foundation/archives_and_serialization/encoding_and_decoding_custom_types) protocol that was made available with the release of [Swift 4](https://swift.org/blog/swift-4-0-released/). This new set of Kitura APIs provides developers with an abstraction layer, where the framework hides the complexity of processing the HTTP request and HTTP response objects and makes available the requested concrete Swift types to the application code.
+The latest version of Kitura (which at the time of writing is `2.0.2`) provides a new set of "Codable Routing" APIs that developers can leverage for implementing route handlers that take advantage of the new [`Codable`](https://developer.apple.com/documentation/foundation/archives_and_serialization/encoding_and_decoding_custom_types) protocol that was made available with the release of [Swift 4](https://swift.org/blog/swift-4-0-released/). This new set of Kitura APIs provides developers with an abstraction layer, where the framework hides the complexity of processing the HTTP request and HTTP response objects and makes available the requested concrete Swift types to the application code.
 
-This proposal seeks to augment these new Codable APIs so that [query parameters](https://en.wikipedia.org/wiki/Query_string) are provided to the application code in a type-safe manner, without exposing to the developer the underlying pinnings of HTTP requests and the composition of query strings.
+This proposal seeks to augment the Codable Routing APIs so that [query parameters](https://en.wikipedia.org/wiki/Query_string) can be provided to the application code in a type-safe manner, without requiring the developer to understand the underlying pinnings of HTTP requests and the composition of query strings.
 
 ### Motivation
-Though the new Codable APIs recenty introduced in Kitura did simplify greatly the effort for processing incoming HTTP requests, these APIs currently do not provide to the applicaton code the values that make up a query string included in an HTTP request. For example, let's take a look at the following snippet of code:
+Though the Codable Routing APIs recently introduced in Kitura did simplify greatly the effort for processing incoming HTTP requests, these APIs currently do not provide to the application code the values that make up a query string included in an HTTP request.
+
+For example, it is common to provide a REST API that allows the client to make a request that includes a set of filters as query parameters. In the case below the client application is making an HTTP `GET` request for a list of employees, but also requesting that the result is filtered by countries, position, and level using a URL encoded query string:
+
+```
+GET http://localhost:8080/employees?countries=US,UK&position=developer&level=55
+```
+
+The current Codable Routing APIs however do not provide a mechanism for accessing the query parameters. For example, let's take a look at the following snippet of code:
 
 ```swift
 router.get("/employees") { (respondWith: ([Employees]?, RequestError?) -> Void) in
@@ -28,28 +36,24 @@ router.get("/employees") { (respondWith: ([Employees]?, RequestError?) -> Void) 
 }
 ```
 
-The sample code shown above leverages the new Codable APIs for processing an HTTP `GET` request for obtaining `Employee` records. Assuming there is a Kitura server that hosts the code shown above running locally, a client that submits an HTTP `GET` request against the `http://localhost:8080/employees` URL should expect to receive in the HTTP response a list of `Employee` entities. However, say the client application included a set of filters in the HTTP `GET` request in the form of a query string, similar to `http://localhost:8080/employees?countries=US,UK&position=developer&level=55`. In such case, the Codable handler for the `/employees` route does not have a way to process those filters since they are not made available to the application code. A workaround to this limitaton would be to revert back to using the traditional *non-codable* APIs that do not take advantage of the Codable protocol. However, doing so would be the equivalent of taking a step back since you'd be losing type safety and you'd end up interacting with `RouterRequest` and `RouterResponse` objects in your application handlers.
+This only allows a client to submit an HTTP `GET` request against the `http://localhost:8080/employees` URL and for the server to return a list of `Employee` entities.
+
+Currently the only approach available for implementing a route with URL encoded query parameters is to fall back to the traditional "Raw Routing" APIs, requiring the interaction with `RouterRequest` and `RouterResponse` objects in your application handlers. This removes all of the ease of use and types safety advantages of using Codable Routing.
 
 ### Proposed solution
-This proposal covers augmenting the new Codable APIs in Kitura `2.x` to make the keys and values contained in query strings available to the appplication code in a type-safe manner. With the new proposed addition to the Codable APIs, the above code becomes:
+This proposal covers augmenting the new Codable Routing APIs in Kitura `2.x` to make the keys and values contained in query strings available to the appplication code in a type-safe manner. With the new proposed addition to the Codable Routing APIs, the above code becomes:
 
 ```swift
 router.get("/employees") { (query: EmployeeQuery, respondWith: ([Employees]?, RequestError?) -> Void) in
-    // Get filters
-    let countries: [String] = query.countries
-    let position: String = query.position
-    let level: Int = query.level
-    // Get employee objects from storage by
-    // filtering the data using the query parameters
-    // provided to the application
-    if let employees = ... {
-        // Return list of employees
-        respondWith(employees, nil)
-    } else {
-        let error = ...
-        // Return error
-        respondWith(nil, error)
-    }
+    // Filter data using the query parameters provided to the application
+    let employees = employeeStore.map({ $0.value }).filter( { 
+        ( $0.level == query.level &&
+        $0.position == query.position &&
+        query.countries.index(of: $0.country) != nil )
+    })
+    
+    // Return list of employees
+    respondWith(employees, nil)    
 }
 ```
 
@@ -68,9 +72,9 @@ Using a concrete Swift type as the embodiment for query parameters provides type
 ### Detailed design
 
 #### Codable routing and query parameters
-The new addition to the Codable APIs in Kitura adds the ability to specify Codable route handlers that denote the concrete Swift type the handler expects to receive as the embodiment for query parameters. Therefore, the framework is expected to validate that the elements found in the query string of the incoming HTTP request can be converted to their corresponding types (e.g. `String`, `Int`, `Float`, `Double`, etc.) and reject non-conforming requests.
+The new addition to the Codable Routing APIs in Kitura adds the ability to specify Codable route handlers that denote the concrete Swift type the handler expects to receive as the embodiment for query parameters. Therefore, the framework is expected to validate that the elements found in the query string of the incoming HTTP request can be converted to their corresponding types (e.g. `String`, `Int`, `Float`, `Double`, etc.) and reject non-conforming requests.
 
-Below is the new API specifications for augmentimng the Codable API routes in Kitura (note that we intend to augment the APIs for the `GET` and `DELETE` methods with an additional Swift type for wrapping query parameters):
+Below is the new API specifications for augmenting the Codable Routing API routes in Kitura (note that we intend to augment the APIs for the HTTP `GET` and HTTP `DELETE` methods with an additional Swift type for wrapping query parameters):
 
 ```swift
 extension Router {
@@ -113,7 +117,7 @@ QueryDecoder.dateFormatter.dateFormat = ...
 QueryDecoder.dateFormatter.timeZone = ...
 ```
 
-[**RO - There is a limitation here since what I am describing above is a single `DateFormatter` instance for the QueryDecoder class. In other words, it is a static field. If we wanted to provide more fine-granular control, we would need to make the `DateFormatter` instance and instance field and not a static field of the QueryDecoder class. In addition, we would then need to allow developers to somehow provide the QueryDecoder instance that a given route handler should use... for now, I am staying away from this... unless we think that this is a must do as part of this proposal**].
+If it becomes critical, at a later point, we can introduce a new proposal for providing more fine-grained control for decoding date strings. For instance, the `DateFormatter` instance field in `QueryDecoder` can be made non-static, which would allow different decoding formats and time zones for date strings within the same Swift application.
 
 ##### Nested types that conform to Codable
 It is also worth noting that developers can also take advantage of the decoding capabilities in `QueryDecoder` for nested `Codable` types, as shown below:
