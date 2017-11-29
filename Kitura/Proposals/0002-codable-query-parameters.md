@@ -63,7 +63,7 @@ public struct EmployeeQuery: Codable {
 
 Note that the fields that make up the Swift type can be optionals (see [`Detailed design`](#detailed-design) for further details).
 
-Using a concrete Swift type as the embodiment for query parameters provides type safety to developers and, at the same time, allows the framework do the heavy lifting, on behalf developers, for parsing the query string, extracting the key-value pairs, and transforming these into the expected data types.
+Using a concrete Swift type as the embodiment for query parameters provides type safety to developers and, at the same time, allows the framework do the heavy lifting, on behalf of developers, for parsing the query string, extracting the key-value pairs, and transforming these into the expected data types.
 
 Though covering changes to [KituraKit](https://github.com/IBM-Swift/KituraKit) is beyond the scope of this proposal, it is worth mentioning that in addition to the proposed APIs described here for Kitura, we also propose augmenting the Codable Routing APIs in KituraKit. These changes will allow developers denote, on the client side, the Swift type that enscapsulates the query parameters that should be included in an HTTP `GET` and HTTP `DELETE` request that comes out from KituraKit. Consequently, developers will be able share the definition of this Swift type between the client and the server. The enchancements to the APIs in KituraKit also include capabilities for encoding the Swift type into the corresponding query string that will appear in the outbound HTTP request:
 

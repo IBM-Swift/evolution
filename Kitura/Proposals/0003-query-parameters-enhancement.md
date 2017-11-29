@@ -10,7 +10,7 @@
 ### Introduction
 Applications that leverage the traditional non-codable APIs in the Kitura framework can obtain [query parameters](https://en.wikipedia.org/wiki/Query_string) provided in an HTTP request by accessing the `queryParameters` field in the `RouterRequest` type. The `queryParameters` field is a dictionary that is of the `[String : String]` type.
 
-This proposal seeks to improve the current API so that applications can extract, without much effort, the values from the  `queryParameters` field in the desired type (e.g. `Int`, `Float`, `Array<Int>`, etc.).
+This proposal seeks to improve the current API so that applications can extract, without much effort, the values from the `queryParameters` field in the desired type (e.g. `Int`, `Float`, `Array<Int>`, etc.).
 
 ### Motivation
 With the current API, application developers implement code similar to what you see below in order to process query parameters provided to their applications:
@@ -31,7 +31,7 @@ router.get("/employees") { (request: RouterRequest, response: RouterResponse, ne
         let strs: [String] = value.components(separatedBy: ",")
         let floats: [Float] = strs.map { Float($0) }.filter { $0 != nil }.map { $0! }
         if floats.count == strs.count {
-           // process floats array
+           ...
         }        
     }
 
@@ -39,7 +39,7 @@ router.get("/employees") { (request: RouterRequest, response: RouterResponse, ne
 }
 ```
 
-Though the code shown above is not complex, it is quite a bit of boilerplate code that application developers need to write, test, and maintain.
+Though the code shown above is not complex, there is a considerable amount of boilerplate code that developers need to write, test, and maintain.
 
 ### Proposed solution
 This proposal covers augmenting the API in Kitura `2.x` for extracting query parameter values. With the new proposed API, the above code becomes:
@@ -63,7 +63,7 @@ router.get("/employees") { (request: RouterRequest, response: RouterResponse, ne
 }
 ```
 
-Here the developer can obtain a query parameter in the desired type by simply invoking the corresponding computed property. The amount of code is significantly reduced with this new API and it is less error prone. The proposed API adds convenience for developers and, at the same time, allows the framework do the heavy lifting, on behalf of developers, for massaging the query parameter values out of the `[String : String]` dictionary.
+Here the developer can obtain a query parameter in the desired type by simply invoking the corresponding computed property. The amount of boilerplate code is significantly reduced with this new API and it is less error prone. The proposed API adds convenience for developers and, at the same time, allows the framework do the heavy lifting, on behalf of developers, for processing the query parameter values out of the `[String : String]` dictionary.
 
 ### Detailed design
 
