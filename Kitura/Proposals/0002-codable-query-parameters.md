@@ -3,7 +3,6 @@
 * Authors: [Ricardo Olivieri](https://github.com/rolivieri), [Chris Bailey](https://github.com/seabaylea)
 * Review Manager: [Lloyd Roseblade](https://github.com/lroseblade)
 * Status: DRAFT
-* Implementation: Link to branch
 * Previous Revision: 1
 * Previous Proposal: N/A
 
