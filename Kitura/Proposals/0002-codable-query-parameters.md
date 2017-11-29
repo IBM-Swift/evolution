@@ -25,14 +25,9 @@ The current Codable Routing APIs however do not provide a mechanism for accessin
 
 ```swift
 router.get("/employees") { (respondWith: ([Employees]?, RequestError?) -> Void) in
-    // Get employee objects from storage
-    if let employees = ... {
-        // Return list of employees
-        respondWith(employees, nil)
-    } else {
-        let error = ...
-        respondWith(nil, error)
-    }
+    // Get employee objects (no filtering)
+    let employees = employeeStore.map({ $0.value })
+    respondWith(employees, nil)
 }
 ```
 
@@ -45,7 +40,7 @@ This proposal covers augmenting the new Codable Routing APIs in Kitura `2.x` to 
 
 ```swift
 router.get("/employees") { (query: EmployeeQuery, respondWith: ([Employees]?, RequestError?) -> Void) in
-    // Filter data using the query parameters provided to the application
+    // Filter data using query parameters provided to the application
     let employees = employeeStore.map({ $0.value }).filter( { 
         ( $0.level == query.level &&
         $0.position == query.position &&
