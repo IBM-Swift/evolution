@@ -163,6 +163,6 @@ As part of the decoding process, `QueryDecoder` will decode the JSON string valu
 Feedback should be via either (or both) of the following routes:
 
 1. The following GitHub issue:  
-   https://github.com/IBM-Swift/evolution/issues/3
+   https://github.com/IBM-Swift/evolution/issues/7
 2. The "open-playback" channel in the Swift@IBM Slack:  
    https://swift-at-ibm-slack.mybluemix.net/
