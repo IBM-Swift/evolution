@@ -8,7 +8,7 @@
 * Previous Proposal: N/A
 
 ### Introduction
-Applications that leverage the traditional non-codable APIs in the Kitura framework can obtain [query parameters](https://en.wikipedia.org/wiki/Query_string) provided in an HTTP request by accessing the `queryParameters` field in the `RouterRequest` type. The `queryParameters` field is a dictionary that is of the `[String : String]` type.
+Applications that leverage the traditional Raw Routing APIs in the Kitura framework can obtain URL encoded [query parameters](https://en.wikipedia.org/wiki/Query_string) provided in an HTTP request by accessing the `queryParameters` field in the `RouterRequest` type. The `queryParameters` field is a dictionary that is of the `[String : String]` type.
 
 This proposal seeks to improve the current API so that applications can extract, without much effort, the values from the `queryParameters` field in the desired type (e.g. `Int`, `Float`, `Array<Int>`, etc.).
 
