@@ -3,7 +3,6 @@
 * Authors: [Ricardo Olivieri](https://github.com/rolivieri), [Chris Bailey](https://github.com/seabaylea)
 * Review Manager: [Lloyd Roseblade](https://github.com/lroseblade)
 * Status: DRAFT
-* Implementation: Link to branch
 * Previous Revision: 1
 * Previous Proposal: N/A
 
@@ -67,7 +66,7 @@ Here the developer can obtain a query parameter in the desired type by simply in
 
 ### Detailed design
 
-An internal extension to the `String` type will be added to the Kitura framework that provides the capabilities described in previous sections of this proposal. Hence, this will be a non-breaking API change.
+An internal extension to the `String` type will be added to the Kitura framework that provides the capabilities described in previous sections of this proposal. Hence, this will be a non-breaking API change. A possible implementation for the extension is shown next:
 
 ```swift
 extension String {
@@ -93,7 +92,7 @@ extension String {
     }
 
     public var string: String {
-        get { return self}
+        get { return self }
     }
 
     public var intArray: [Int]? {
