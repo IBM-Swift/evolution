@@ -50,11 +50,11 @@ router.get("/employees") { (request: RouterRequest, response: RouterResponse, ne
         ...
     }
 
-     if let level: Int = queryParams["level"]?.int {
+     if let level: Int = params["level"]?.int {
         ...
     }
 
-    if let ratings: [Float] = queryParams["ratings"]?.floatArray {
+    if let ratings: [Float] = params["ratings"]?.floatArray {
         ...
     }
 
