@@ -23,7 +23,7 @@ GET http://localhost:8080/employees?countries=US,UK&position=developer&level=55
 The current Codable Routing APIs however do not provide a mechanism for accessing the query parameters. For example, let's take a look at the following snippet of code:
 
 ```swift
-router.get("/employees") { (respondWith: ([Employees]?, RequestError?) -> Void) in
+router.get("/employees") { (respondWith: ([Employee]?, RequestError?) -> Void) in
     // Get employee objects (no filtering)
     let employees = employeeStore.map({ $0.value })
     respondWith(employees, nil)
@@ -35,10 +35,10 @@ This only allows a client to submit an HTTP `GET` request against the `http://lo
 Currently the only approach available for implementing a route with URL encoded query parameters is to fall back to the traditional "Raw Routing" APIs, requiring the interaction with `RouterRequest` and `RouterResponse` objects in your application handlers. This removes all of the ease of use and types safety advantages of using Codable Routing.
 
 ### Proposed solution
-This proposal covers augmenting the new Codable Routing APIs in Kitura `2.x` to make the keys and values contained in query strings available to the appplication code in a type-safe manner. With the new proposed addition to the Codable Routing APIs, the above code becomes:
+This proposal covers augmenting the new Codable Routing APIs in Kitura `2.x` to make the keys and values contained in query strings available to the application code in a type-safe manner. With the new proposed addition to the Codable Routing APIs, the above code becomes:
 
 ```swift
-router.get("/employees") { (query: EmployeeQuery, respondWith: ([Employees]?, RequestError?) -> Void) in
+router.get("/employees") { (query: EmployeeQuery, respondWith: ([Employee]?, RequestError?) -> Void) in
     // Filter data using query parameters provided to the application
     let employees = employeeStore.map({ $0.value }).filter( { 
         ( $0.level == query.level &&
