@@ -33,8 +33,8 @@ struct Query: QueryParams {
 
 router.get("/users", handler: getUsers)
 
-func getUsers(filter: Query, completion: @escaping ([User]?, RequestError?) -> Void) -> Void {
-  User.findAll(filter: filter, completion)
+func getUsers(query: Query, completion: @escaping ([User]?, RequestError?) -> Void) -> Void {
+  User.findAll(matching: query, completion)
 }
 ```
 
@@ -44,7 +44,7 @@ func getUsers(filter: Query, completion: @escaping ([User]?, RequestError?) -> V
 In order to use the QueryParameters in the ORM, the ORM calls need to accept a `QueryParams` instance. There are couple of ways of doing this, this could be one:
 
 ```[swift]
-public func findAll<Q: QueryParams>(filter: QueryParams, _ completion: @escaping ([Self]?,RequestError?) -> Void) -> Void
+public func findAll<Q: QueryParams>(matching: Q, _ completion: @escaping ([Self]?,RequestError?) -> Void) -> Void
 ```
 
 #### Encoding the values
@@ -113,8 +113,8 @@ Describe alternative approaches to addressing the same problem, and why you chos
 An alternative to the ORM Api could be adding a `Filter` function:
 
 ```[swift]
-func getUsers(filter: Query, completion: @escaping ([User]?, RequestError?) -> Void) -> Void {
-  User.findAll(completion).filter(on: filter)
+func getUsers(query: Query, completion: @escaping ([User]?, RequestError?) -> Void) -> Void {
+  User.findAll(completion).filter(on: query)
 }
 ```
 
