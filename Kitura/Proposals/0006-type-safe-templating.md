@@ -145,10 +145,52 @@ response.render("myTemplate.template", using: meal, forTag: "meals")
 ```
 
 #### Passing a single Codable type
+This involved adding a new method to [KituraTemplateEngine](https://github.com/IBM-Swift/Kitura-TemplateEngine): 
+```swift
+func render<T: Codable>(filePath: String, context: T,
+                            forKey key: String?, options: RenderingOptions, templateName: String) throws -> String
+```
 
+Which has a unique implementation for each template engine: 
+- Stencil 
+```swift
+public func render<T: Codable>(filePath: String, context: T, forTag tag: String?,
+                                   options: RenderingOptions, templateName: String) throws -> String {
+        
+        let loader = FileSystemLoader(paths: rootPaths)
+        let environment = Environment(loader: loader, extensions: [`extension`])
+        if let contextTag = tag {
+             return try environment.renderTemplate(name: templateName, context: [contextKey: context])
+        } else {
+            let data = try JSONEncoder().encode(context)
+            let json = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String: Any]
+        
+            return try environment.renderTemplate(name: templateName, context: json)
+        }
+    }
+```
 
+- Mustache
+```swift
+public func render<T: Codable>(filePath: String, context: T, forTag tag: String?,
+                                   options: RenderingOptions, templateName: String) throws -> String {
+
+        let template = try Template(path: filePath)
+        
+        if let contextTag = tag {
+            let data = try JSONEncoder().encode(context)
+            let json = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as! [String: Any]
+            return try template.render(with: Box([contextTag: json]))
+        } else {
+            let data = try JSONEncoder().encode(context)
+            let json = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as! [String: Any]
+            return try template.render(with: Box(json))
+        } 
+    }
+```
 
 #### Passing an array of Codable types
+
 
 #### Passing multiple different Codable types
 
