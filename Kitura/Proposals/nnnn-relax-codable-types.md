@@ -26,10 +26,22 @@ This is not an API-breaking change:
 - `Decodable` and `Encodable` are a subset of `Codable`, so existing Codable types can be used, and can continue to be used for both the input and output type
 - Kitura's `Router` class is not `open` (and so cannot have been subclassed outside of the Kitura package).
 
+To facilitate receiving a `Decodable` type via a PUT or POST, without requiring an `Encodable` type be returned, this proposal relaxes the rules for responding with an `(Encodable?, RequestError?)`, so that rather than requiring exactly one of these to be non-nil, the following are also permitted:
+- `(nil, successStatus)`: respond successfully with the specified status code and no body
+- `(nil, nil)`: respond successfully with the default status for that method and no body
+
+Where `successStatus` is a `RequestError` in the 2xx (success) range.
+
+And similarly for `(Identifier?, Encodable?, RequestError?)`:
+- `(id, nil, successStatus)`: respond successfully with the Location header, specified status code and no body
+- `(id, nil, nil)`: respond successfully with the Location header, default status for that method and no body
+
+where `id` is a valid `Identifier`.
+
 ### Detailed design
 A working prototype exists here:
-- https://github.com/IBM-Swift/Kitura/compare/issue_1235
-- https://github.com/IBM-Swift/KituraContracts/compare/issue_1235
+- https://github.com/IBM-Swift/Kitura/compare/issue_1235 (https://github.com/IBM-Swift/Kitura/pull/1242)
+- https://github.com/IBM-Swift/KituraContracts/compare/issue_1235 (https://github.com/IBM-Swift/KituraContracts/pull/18)
 
 ### Alternatives considered
 None
