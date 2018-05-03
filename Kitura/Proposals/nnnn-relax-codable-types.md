@@ -38,6 +38,11 @@ And similarly for `(Identifier?, Encodable?, RequestError?)`:
 
 where `id` is a valid `Identifier`.
 
+### No change to the KituraKit client
+Although KituraKit's API mirrors that of Kitura's Codable Routing, I felt it makes sense to leave KituraKit's API in terms of `Codable` input and output types: KituraKit shares types with a Kitura back-end, and thus those types must be both encodable and decodable. It is not intended that KituraKit be used to interact with non-codable routes.
+
+By contrast, it is reasonable to expect Kitura to interact with existing services and clients in a type-safe way.
+
 ### Detailed design
 A working prototype exists here:
 - https://github.com/IBM-Swift/Kitura/compare/issue_1235 (https://github.com/IBM-Swift/Kitura/pull/1242)
