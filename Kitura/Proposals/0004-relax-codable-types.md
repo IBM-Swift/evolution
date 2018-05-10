@@ -1,5 +1,5 @@
 ## Relax Type Constraints for Codable Routing
-* Proposal: KIT-nnnn
+* Proposal: KIT-0004
 * Authors: [David Jones](https://github.com/djones6)
 * Review Manager: [Lloyd Roseblade](https://github.com/lroseblade)
 * Status: DRAFT
