@@ -8,7 +8,7 @@
 
 ### Introduction
 
-when you are using Codable routes in Kitura you abstract away request and response and work directly with Codable objects. We have added TypeSafeMiddleware to handle middleware like sessions and authentication on the way in however you are still unable to render pages or redirect. This makes codable routes unusable for web apps.
+when you are using Codable routes in Kitura you abstract away request and response and work directly with Codable objects. We have added TypeSafeMiddleware to handle middleware like sessions and authentication on the way in however you are still unable to render pages or redirect. This makes Codable routes unusable for web apps.
 
 This proposal adds a new protocol that would change the RouterResponse using the Codable object you return. This would allow you to use Codable routes for web apps and give it the same level of functionality as Raw routes.
 
@@ -20,7 +20,8 @@ Codable routes bring a lot of benefits in simplifying a users code and adding ty
 
 ```swift
  router.add(templateEngine: StencilTemplateEngine())
- router.post("/") { request, response, next in
+ router.post("/", handler: Renderhandler)
+ func Renderhandler(request: RouterRequest, response: RouterResponse, next: @escaping () -> Void) throws -> Void {
     let friend = try request.read(as: Friend.self)
     try response.render("Example.stencil", with: friend)
     next()
@@ -57,13 +58,13 @@ Inside the Codable results handler you would check if the returned type is a Res
 
 ```swift
 if let responseWare = codableOutput as? ResponseWare {
-    responseWare.respond(response: response, completion: { (error) in
+    responseWare.respond(request: request, response: response, completion: { (error) in
         if let error = error {
             response.status(HTTPStatusCode(rawValue: error.httpCode) ?? .internalServerError)
         }
     })
 } else {
-    // run normal codable response
+    try response.send(codableOutput)
 }
 completion()
 ```
